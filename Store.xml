@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Map>
+  <RMSchema>
+    <Customer>
+      <getNamePhone type="string" />
+      <getName type="string" />
+      <getPhone type="string" />
+    </Customer>
+    <Map>
+      <objects subtype="Customer" type="List" />
+    </Map>
+  </RMSchema>
+  <objects getNamePhone="Elmer Binkman (212.555.3325)" getName="Elmer Binkman" getPhone="212.555.3325" />
+  <objects getNamePhone="Susan Thomson (805.555.6682)" getName="Susan Thomson" getPhone="805.555.6682" />
+  <objects getNamePhone="Terrance Donahue (612.555.3421)" getName="Terrance Donahue" getPhone="612.555.3421" />
+  <objects getNamePhone="Xavior Kelsanse (322.555.8825)" getName="Xavior Kelsanse" getPhone="322.555.8825" />
+</Map>
