@@ -15,5 +15,5 @@
 <p> **What is Levelset method ?**
 
 ### System snapshot
-![Alt text](/home/liu/Pictures/Screenshot from 2016-06-02 12:50:23.png "Optional title")
+![Alt text](https://github.com/blueclowd/Skullstripping/commits/master/LevelSetCBEL.png "Optional title")
 
