@@ -21,7 +21,7 @@ public class GLCM extends Texture
 
 	private GLCMFeatures glcmFeatures;
 
-	private Map<Point, double[][]> glcmMap = new HashMap<Point, double[][]>();
+	private Map<Point, double[][]> glcmMap;
 
 
 	public GLCM(double[][] img, int level, int xDis, int yDis, int min, int max, int winSize)
@@ -32,9 +32,8 @@ public class GLCM extends Texture
 
 		final int[][] scaled = doQuantization(img, level, min, max);
 
-		glcmMap = evaluate(scaled, level, xDis, yDis, winSize);
-
-		glcmFeatures = calculateFeatures(glcmMap);
+		glcmMap = calculateGLCM(scaled, level, xDis, yDis, winSize);
+		glcmFeatures = new GLCMFeatures(glcmMap);
 
 	}
 
@@ -46,13 +45,22 @@ public class GLCM extends Texture
 
 		final int[][] scaled = doQuantization(convertToDouble(img), level, min, max);
 
-		glcmMap = evaluate(scaled, level, xDis, yDis, winSize);
-
-		glcmFeatures = calculateFeatures(glcmMap);
+		glcmMap = calculateGLCM(scaled, level, xDis, yDis, winSize);
+		glcmFeatures = new GLCMFeatures(glcmMap);
 
 	}
 
-	private Map<Point, double[][]> evaluate(int[][] scaled, int level, int xDis, int yDis,
+	/**
+	 * Calculate GLCM based on scaled image
+	 * 
+	 * @param scaled
+	 * @param level
+	 * @param xDis
+	 * @param yDis
+	 * @param winSize
+	 * @return
+	 */
+	private Map<Point, double[][]> calculateGLCM(int[][] scaled, int level, int xDis, int yDis,
 			int winSize)
 	{
 		final int height = scaled.length;
@@ -200,58 +208,21 @@ public class GLCM extends Texture
 
 	}
 
-	private GLCMFeatures calculateFeatures(Map<Point, double[][]> glcmMap)
-	{
-		final double[][] contrast = new double[height][width];
-		final double[][] homogenity = new double[height][width];
-		final double[][] entropy = new double[height][width];
-		final double[][] energy = new double[height][width];
-
-		for (Map.Entry<Point, double[][]> glcm : glcmMap.entrySet())
-		{
-			double entropyTemp = 0;
-			double energyTemp = 0;
-			double contrastTemp = 0;
-			double homogenityTemp = 0;
-
-			double[][] glcmMat = glcm.getValue();
-			Point loc = glcm.getKey();
-			int y = (int) loc.getY();
-			int x = (int) loc.getX();
-
-			for (int i = 0; i < glcmMat.length; i++)
-			{
-				for (int j = 0; j < glcmMat[0].length; j++)
-				{
-					entropyTemp -= glcmMat[i][j] * Math.log(glcmMat[i][j]);
-					energyTemp += glcmMat[i][j] * glcmMat[i][j];
-					contrastTemp += (i - j) * (i - j) * glcmMat[i][j];
-					homogenityTemp += glcmMat[i][j] / (1 + (i - j) * (i - j));
-				}
-			}
-
-			contrast[y][x] = contrastTemp;
-			homogenity[y][x] = homogenityTemp;
-			entropy[y][x] = entropyTemp;
-			energy[y][x] = energyTemp;
-
-		}
-
-		final GLCMFeatures glcmFeatures = new GLCMFeatures();
-		glcmFeatures.setContrast(contrast);
-		glcmFeatures.setEnergy(energy);
-		glcmFeatures.setEntropy(entropy);
-		glcmFeatures.setHomogenity(homogenity);
-
-		return glcmFeatures;
-	}
-
-
+	/**
+	 * Accessor of GLCM features
+	 * 
+	 * @return
+	 */
 	public GLCMFeatures getGLCMFeatures()
 	{
 		return glcmFeatures;
 	}
 
+	/**
+	 * Accessor of GLCM matrices
+	 * 
+	 * @return
+	 */
 	public Map<Point, double[][]> getGLCMMap()
 	{
 		return glcmMap;
