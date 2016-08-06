@@ -1,204 +1,181 @@
 package model;
 
 import java.awt.image.BufferedImage;
+import java.util.List;
 
+/**
+ * Information about the contour evolvement
+ * 
+ * @author Vincent Liu
+ * 
+ */
 public class SegmentResult
 {
 
-  private int sliceNo;
+	private Metrics metrics;
 
-  private Metrics metrics;
+	private long evolveTime;
 
-  private long evolveTime;
+	private BufferedImage originImg;
 
-  private int iterCnt;
+	private List<double[][]> phiList;
 
-  private BufferedImage originImg;
+	private BufferedImage resultImg;
 
-  private double[][] phi;
+	public Metrics getMetrics()
+	{
+		return metrics;
+	}
 
-  private BufferedImage resultImg;
+	public void setMetrics(Metrics metrics)
+	{
+		this.metrics = metrics;
+	}
 
+	public long getEvolveTime()
+	{
+		return evolveTime;
+	}
 
-  public SegmentResult(int sliceNo)
-  {
-    this.sliceNo = sliceNo;
-  }
+	public void setEvolveTime(long evolveTime)
+	{
+		this.evolveTime = evolveTime;
+	}
 
-  public int getSliceNo()
-  {
-    return sliceNo;
-  }
+	public BufferedImage getOriginImg()
+	{
+		return originImg;
+	}
 
-  public void setSliceNo(int sliceNo)
-  {
-    this.sliceNo = sliceNo;
-  }
+	public void setOriginImg(BufferedImage originImg)
+	{
+		this.originImg = originImg;
+	}
 
-  public Metrics getMetrics()
-  {
-    return metrics;
-  }
+	public List<double[][]> getPhiList()
+	{
+		return phiList;
+	}
 
-  public void setMetrics(Metrics metrics)
-  {
-    this.metrics = metrics;
-  }
+	public void setPhiList(List<double[][]> phiList)
+	{
+		this.phiList = phiList;
+	}
 
-  public long getEvolveTime()
-  {
-    return evolveTime;
-  }
+	public BufferedImage getResultImg()
+	{
+		return resultImg;
+	}
 
-  public void setEvolveTime(long evolveTime)
-  {
-    this.evolveTime = evolveTime;
-  }
+	public void setResultImg(BufferedImage resultImg)
+	{
+		this.resultImg = resultImg;
+	}
 
-  public int getIterCnt()
-  {
-    return iterCnt;
-  }
+	/**
+	 * Only for ReportMill reflection
+	 * 
+	 * @return
+	 */
+	public double getJaccard()
+	{
+		if (metrics == null)
+		{
+			return Double.NaN;
+		} else
+		{
+			return metrics.getJaccard();
+		}
 
-  public void setIterCnt(int iterCnt)
-  {
-    this.iterCnt = iterCnt;
-  }
+	}
 
-  public BufferedImage getOriginImg()
-  {
-    return originImg;
-  }
+	/**
+	 * Only for ReportMill reflection
+	 * 
+	 * @return
+	 */
+	public double getDice()
+	{
 
-  public void setOriginImg(BufferedImage originImg)
-  {
-    this.originImg = originImg;
-  }
+		if (metrics == null)
+		{
+			return Double.NaN;
+		} else
+		{
+			return metrics.getDice();
+		}
 
-  public double[][] getPhi()
-  {
-    return phi;
-  }
+	}
 
-  public void setPhi(double[][] phi)
-  {
-    this.phi = phi;
-  }
+	/**
+	 * Only for ReportMill reflection
+	 * 
+	 * @return
+	 */
+	public double getConformity()
+	{
 
-  public BufferedImage getResultImg()
-  {
-    return resultImg;
-  }
+		if (metrics == null)
+		{
+			return Double.NaN;
+		} else
+		{
+			return metrics.getConformity();
+		}
 
-  public void setResultImg(BufferedImage resultImg)
-  {
-    this.resultImg = resultImg;
-  }
+	}
 
-  /**
-   * Only for ReportMill reflection
-   * 
-   * @return
-   */
-  public double getJaccard()
-  {
-    if (metrics == null)
-    {
-      return Double.NaN;
-    } else
-    {
-      return metrics.getJaccard();
-    }
+	/**
+	 * Only for ReportMill reflection
+	 * 
+	 * @return
+	 */
+	public double getSensitivity()
+	{
 
-  }
+		if (metrics == null)
+		{
+			return Double.NaN;
+		} else
+		{
+			return metrics.getSensitivity();
+		}
 
-  /**
-   * Only for ReportMill reflection
-   * 
-   * @return
-   */
-  public double getDice()
-  {
+	}
 
-    if (metrics == null)
-    {
-      return Double.NaN;
-    } else
-    {
-      return metrics.getDice();
-    }
+	/**
+	 * Only for ReportMill reflection
+	 * 
+	 * @return
+	 */
+	public double getSpecificity()
+	{
 
-  }
+		if (metrics == null)
+		{
+			return Double.NaN;
+		} else
+		{
+			return metrics.getSpecificity();
+		}
 
-  /**
-   * Only for ReportMill reflection
-   * 
-   * @return
-   */
-  public double getConformity()
-  {
+	}
 
-    if (metrics == null)
-    {
-      return Double.NaN;
-    } else
-    {
-      return metrics.getConformity();
-    }
+	/**
+	 * Only for ReportMill reflection
+	 * 
+	 * @return
+	 */
+	public double getFPRate()
+	{
 
-  }
-
-  /**
-   * Only for ReportMill reflection
-   * 
-   * @return
-   */
-  public double getSensitivity()
-  {
-
-    if (metrics == null)
-    {
-      return Double.NaN;
-    } else
-    {
-      return metrics.getSensitivity();
-    }
-
-  }
-
-  /**
-   * Only for ReportMill reflection
-   * 
-   * @return
-   */
-  public double getSpecificity()
-  {
-
-    if (metrics == null)
-    {
-      return Double.NaN;
-    } else
-    {
-      return metrics.getSpecificity();
-    }
-
-  }
-
-  /**
-   * Only for ReportMill reflection
-   * 
-   * @return
-   */
-  public double getFPRate()
-  {
-
-    if (metrics == null)
-    {
-      return Double.NaN;
-    } else
-    {
-      return metrics.getFPRate();
-    }
-  }
+		if (metrics == null)
+		{
+			return Double.NaN;
+		} else
+		{
+			return metrics.getFPRate();
+		}
+	}
 
 }

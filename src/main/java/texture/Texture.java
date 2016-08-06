@@ -11,7 +11,7 @@ public class Texture
 	/**
 	 * Original image
 	 */
-	protected double[][] img;
+	protected static double[][] img;
 
 	/**
 	 * First derivative of original image along x direction
@@ -37,6 +37,11 @@ public class Texture
 	 * First derivative of original image along x and y directions
 	 */
 	protected double[][] imgXY;
+
+	public Texture()
+	{
+
+	}
 
 	public Texture(double[][] img)
 	{
@@ -81,6 +86,7 @@ public class Texture
 
 	protected static double[][] convertToDouble(BufferedImage img)
 	{
+
 		final double[][] doubleImg = new double[img.getHeight()][img.getWidth()];
 
 		for (int y = 0; y < doubleImg.length; y++)

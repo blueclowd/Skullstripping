@@ -4,106 +4,132 @@ import java.awt.Color;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import utils.LSConstants.ContourColor;
+import utils.LSConstants.LevelsetType;
 
 /**
- * Ui options
+ * UI options
  * 
- * @author liu
+ * @author Vincent Liu
  * 
  */
 public class UiOptions
 {
+	private double textureCoefficient = 0.1;
 
-  private double velocity = 0.05 * 255 * 255;
+	private double velocity = 0.05 * 255 * 255;
 
-  private double threshold = 0.5;
+	private double threshold = 0.5;
 
-  private int heading = 0;
+	private int heading = 0;
 
-  private boolean isHoleFilling = false;
+	private boolean isHoleFilling = false;
 
-  private String outputMaskFile;
+	private String outputMaskFile;
 
-  private String outputBrainOnlyFile;
+	private String outputBrainOnlyFile;
 
-  private String contourColor;
+	private ContourColor contourColor;
 
-  private Map<String, Color> colorMap = new LinkedHashMap<String, Color>();
+	private LevelsetType levelsetType = LevelsetType.Model;
 
-  public UiOptions()
-  {
-    colorMap.put("Yellow", Color.yellow);
-    colorMap.put("Green", Color.green);
-    colorMap.put("Magenta", Color.magenta);
-  }
+	private Map<ContourColor, Color> colorMap = new LinkedHashMap<ContourColor, Color>();
 
-  public double getVelocity()
-  {
-    return velocity;
-  }
+	public UiOptions()
+	{
+		colorMap.put(ContourColor.Yellow, Color.yellow);
+		colorMap.put(ContourColor.Green, Color.green);
+		colorMap.put(ContourColor.Magenta, Color.magenta);
+		colorMap.put(ContourColor.White, Color.white);
+	}
 
-  public void setVelocity(double velocity)
-  {
-    this.velocity = velocity;
-  }
+	public double getVelocity()
+	{
+		return velocity;
+	}
 
-  public double getThreshold()
-  {
-    return threshold;
-  }
+	public void setVelocity(double velocity)
+	{
+		this.velocity = velocity;
+	}
 
-  public void setThreshold(double threshold)
-  {
-    this.threshold = threshold;
-  }
+	public double getThreshold()
+	{
+		return threshold;
+	}
 
-  public int getHeading()
-  {
-    return heading;
-  }
+	public void setThreshold(double threshold)
+	{
+		this.threshold = threshold;
+	}
 
-  public void setHeading(int heading)
-  {
-    this.heading = heading;
-  }
+	public int getHeading()
+	{
+		return heading;
+	}
 
-  public boolean isHoleFilling()
-  {
-    return isHoleFilling;
-  }
+	public void setHeading(int heading)
+	{
+		this.heading = heading;
+	}
 
-  public void setHoleFilling(boolean isHoleFilling)
-  {
-    this.isHoleFilling = isHoleFilling;
-  }
+	public boolean isHoleFilling()
+	{
+		return isHoleFilling;
+	}
 
-  public String getOutputMaskFile()
-  {
-    return outputMaskFile;
-  }
+	public void setHoleFilling(boolean isHoleFilling)
+	{
+		this.isHoleFilling = isHoleFilling;
+	}
 
-  public void setOutputMaskFile(String outputMaskFile)
-  {
-    this.outputMaskFile = outputMaskFile;
-  }
+	public String getOutputMaskFile()
+	{
+		return outputMaskFile;
+	}
 
-  public String getOutputBrainOnlyFile()
-  {
-    return outputBrainOnlyFile;
-  }
+	public void setOutputMaskFile(String outputMaskFile)
+	{
+		this.outputMaskFile = outputMaskFile;
+	}
 
-  public void setOutputBrainOnlyFile(String outputBrainOnlyFile)
-  {
-    this.outputBrainOnlyFile = outputBrainOnlyFile;
-  }
+	public String getOutputBrainOnlyFile()
+	{
+		return outputBrainOnlyFile;
+	}
 
-  public Color getContourColor()
-  {
-    return colorMap.get(contourColor);
-  }
+	public void setOutputBrainOnlyFile(String outputBrainOnlyFile)
+	{
+		this.outputBrainOnlyFile = outputBrainOnlyFile;
+	}
 
-  public void setContourColor(String contourColor)
-  {
-    this.contourColor = contourColor;
-  }
+	public Color getContourColor()
+	{
+		return colorMap.get(contourColor);
+	}
+
+	public void setContourColor(ContourColor contourColor)
+	{
+		this.contourColor = contourColor;
+	}
+
+	public LevelsetType getLevelsetType()
+	{
+		return levelsetType;
+	}
+
+	public void setLevelsetType(LevelsetType levelsetType)
+	{
+		this.levelsetType = levelsetType;
+	}
+
+	public double getTextureCoefficient()
+	{
+		return textureCoefficient;
+	}
+
+	public void setTextureCoefficient(double textureCoefficient)
+	{
+		this.textureCoefficient = textureCoefficient;
+	}
 }

@@ -1,178 +1,105 @@
 import ij.IJ;
 import ij.ImagePlus;
-import ij.gui.GenericDialog;
+import ij.WindowManager;
 import ij.io.OpenDialog;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 
-import model.SegmentResult;
-import model.UiOptions;
+import javax.swing.JOptionPane;
 
-import org.apache.commons.lang3.StringUtils;
+import utils.LSConstants;
+import utils.LSUtil;
+import view.CustomWindow;
+import view.RunBtnActionListener;
+import controller.DataManager;
 
-import com.itextpdf.text.DocumentException;
-
+/**
+ * Entry class for ImageJ plugin
+ * 
+ * @author Vincent Liu
+ * 
+ */
 public class LevelSetCBEL_ implements PlugInFilter
 {
 
-  private UiOptions uiOpts;
+	private String filePath;
+	private String fileName;
 
-  private DataManager dataManager;
+	private List<String> gtFileNameList;
+	private List<String> gtFilePathList;
 
-  // Configuration
-  private static final Font font = new Font("Arial", Font.BOLD, 12);
-  private static final Color bgColor = new Color(140, 240, 160);
+	private ImagePlus imgPlus;
+	private ImagePlus gtImgPlus;
 
-  private String filePath;
-  private String fileName;
+	@Override
+	public int setup(String arg, ImagePlus imgPlus)
+	{
 
-  private String gtFileName;
-  private String gtFilePath;
+		this.imgPlus = imgPlus;
 
-  public int setup(String arg, ImagePlus imgPlus)
-  {
+		fileName = imgPlus.getOriginalFileInfo().fileName;
+		filePath = imgPlus.getOriginalFileInfo().directory + fileName;
 
-    // Open parameter dialog
-    final GenericDialog gd = new GenericDialog("Parameters");
+		IJ.log("File Path = " + filePath);
 
-    setDialogConfig(gd);
+		// Open dialog for ground truth selection, there might be multiple
+		// ground truths for different anatomical structure.
+		gtFileNameList = new ArrayList<String>();
+		gtFilePathList = new ArrayList<String>();
 
-    gd.showDialog();
+		while (true)
+		{
+			final OpenDialog gtDialog = new OpenDialog("Open ground truth image...");
+			gtFileNameList.add(gtDialog.getFileName());
+			gtFilePathList.add(gtDialog.getDirectory() + gtDialog.getFileName());
+			IJ.log("GT File Path = " + gtDialog.getDirectory() + gtDialog.getFileName());
 
-    if (gd.wasCanceled())
-    {
-      IJ.error("PlugIn canceled!");
-      return 0;
-    }
+			int selected =
+					JOptionPane.showConfirmDialog(null, LSConstants.GROUND_TRUTH_SELECTION_QUES,
+							LSConstants.GROUND_TRUTH_SELECTION_TITLE, JOptionPane.YES_NO_OPTION);
 
-    fileName = imgPlus.getOriginalFileInfo().fileName;
-    filePath = imgPlus.getOriginalFileInfo().directory + fileName;
+			if (JOptionPane.YES_OPTION == selected)
+			{
+				IJ.log("Finish loading ground truth");
+				break;
+			}
 
-    IJ.log("Input Image = " + filePath);
+		}
 
-    final OpenDialog gtDialog = new OpenDialog("Open ground truth image...");
+		gtImgPlus = LSUtil.combineGroundTruth(gtFilePathList);
 
-    gtFileName = gtDialog.getFileName();
-    gtFilePath = gtDialog.getDirectory() + gtFileName;
+		return DOES_ALL;
+	}
 
-    IJ.log("Ground Truth = " + gtFilePath);
+	/**
+	 * The run method receives the image processor of the image and performs the actual function of
+	 * the plugin
+	 */
+	@Override
+	public void run(ImageProcessor ip)
+	{
 
+		IJ.log("run()...");
 
-    // UI options from GenericDialog
-    uiOpts = getUiOptions(gd);
+		// Close default window by ImageJ
+		WindowManager.removeWindow(WindowManager.getCurrentWindow());
 
-    dataManager = new DataManager(uiOpts, imgPlus);
+		final DataManager dataManager =
+				new DataManager(filePath, gtImgPlus, LSConstants.RESULT_DIRECTORY);
 
-    dataManager.loadMetadata(imgPlus);
+		final CustomWindow customWindow =
+				new CustomWindow(LSUtil.readImage(filePath, true), gtImgPlus,
+						imgPlus.getStackSize() / 3, fileName);
 
-    dataManager.createSkullStripper();
+		// Set action listeners
+		customWindow.addRunBtnActionListener(new RunBtnActionListener(dataManager, customWindow,
+				fileName, filePath, gtFileNameList, gtFilePathList));
 
-    // The plugin filter handles all types of images
-    return DOES_ALL;
-  }
+		dataManager.setCustomWindow(customWindow);
 
-  /**
-   * The run method receives the image processor of the image and performs the actual function of
-   * the plugin
-   */
-  public void run(ImageProcessor ip)
-  {
+	}
 
-    IJ.log("run()...");
-
-    dataManager.initZeroLS();
-
-    dataManager.evolveVolume();
-
-    if (uiOpts.isHoleFilling())
-    {
-      dataManager.fillHoles();
-    }
-
-    if (StringUtils.isNotEmpty(uiOpts.getOutputMaskFile()))
-    {
-      dataManager.saveMask(uiOpts.getOutputMaskFile());
-    }
-    if (StringUtils.isNotEmpty(uiOpts.getOutputBrainOnlyFile()))
-    {
-      dataManager.saveBrainOnlyFile(uiOpts.getOutputBrainOnlyFile());
-    }
-
-    IJ.log("Evaluate segmentation result");
-    final List<SegmentResult> segmentResults = dataManager.evaluateResult();
-
-    try
-    {
-      new Report(segmentResults, fileName, gtFileName).generate();
-    } catch (FileNotFoundException e)
-    {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    } catch (DocumentException e)
-    {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-
-    dataManager.closeReader();
-
-  }
-
-  /**
-   * Common configuration of dialog
-   */
-  private void setDialogConfig(GenericDialog gd)
-  {
-
-    IJ.log("setDialogConfig()...");
-
-    gd.setFont(font);
-
-    gd.setBackground(bgColor);
-
-    gd.addNumericField("Velocity", 0.05 * 255 * 255, 2);
-
-    gd.addNumericField("Threshold", 0.2, 2);
-
-    gd.addNumericField("Heading(0-3)", 0, 0);
-
-    gd.addCheckbox("Fill holes", false);
-
-    gd.addStringField("Save mask file (jpg)", "mask");
-
-    gd.addStringField("Save brain-only file", "brain");
-
-    gd.addChoice("Contour Color", new String[] {"Yellow", "Green", "Magenta"}, "Yelow");
-
-  }
-
-  private UiOptions getUiOptions(final GenericDialog dialog)
-  {
-
-    final UiOptions uiOpts = new UiOptions();
-
-    uiOpts.setVelocity(dialog.getNextNumber());
-    uiOpts.setThreshold(dialog.getNextNumber());
-    uiOpts.setHeading((int) dialog.getNextNumber());
-
-    uiOpts.setHoleFilling(dialog.getNextBoolean());
-    uiOpts.setOutputMaskFile(dialog.getNextString());
-    uiOpts.setOutputBrainOnlyFile(dialog.getNextString());
-
-    uiOpts.setContourColor(dialog.getNextChoice());
-
-    IJ.log("Ui Options:");
-    IJ.log("Velocity = " + uiOpts.getVelocity());
-    IJ.log("Threshold = " + uiOpts.getThreshold());
-    IJ.log("Heading = " + uiOpts.getHeading());
-
-    IJ.log("Heading = " + uiOpts.getContourColor());
-
-    return uiOpts;
-  }
 }

@@ -1,6 +1,9 @@
 package texture;
 
+import ij.IJ;
+
 import java.awt.Point;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -16,8 +19,14 @@ public class GLCMFeatures
 	private double[][] entropy;
 	private double[][] energy;
 
-	public GLCMFeatures(Map<Point, double[][]> glcmMap)
+	private int height;
+	private int width;
+
+	public GLCMFeatures(Map<Point, double[][]> glcmMap, int width, int height)
 	{
+		this.height = height;
+		this.width = width;
+
 		calculateFeatures(glcmMap);
 	}
 
@@ -28,18 +37,8 @@ public class GLCMFeatures
 	 */
 	private void calculateFeatures(Map<Point, double[][]> glcmMap)
 	{
-		int height = 0;
-		int width = 0;
 
-		if (glcmMap.containsKey(new Point(0, 0)))
-		{
-			height = glcmMap.get(new Point(0, 0)).length;
-			width = glcmMap.get(new Point(0, 0))[0].length;
-		} else
-		{
-			throw new IllegalArgumentException();
-		}
-
+		Date tic = new Date();
 
 		final double[][] contrast = new double[height][width];
 		final double[][] homogenity = new double[height][width];
@@ -64,8 +63,8 @@ public class GLCMFeatures
 				{
 					entropyTemp -= glcmMat[i][j] * Math.log(glcmMat[i][j]);
 					energyTemp += glcmMat[i][j] * glcmMat[i][j];
-					contrastTemp += (i - j) * (i - j) * glcmMat[i][j];
-					homogenityTemp += glcmMat[i][j] / (1 + (i - j) * (i - j));
+					// contrastTemp += (i - j) * (i - j) * glcmMat[i][j];
+					// homogenityTemp += glcmMat[i][j] / (1 + (i - j) * (i - j));
 				}
 			}
 
@@ -75,6 +74,10 @@ public class GLCMFeatures
 			energy[y][x] = energyTemp;
 
 		}
+
+		Date tac = new Date();
+
+		IJ.log("Exec. Time = " + (tac.getTime() - tic.getTime()));
 
 		setContrast(contrast);
 		setEnergy(energy);

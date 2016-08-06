@@ -23,31 +23,25 @@ public class GLCM extends Texture
 
 	private Map<Point, double[][]> glcmMap;
 
-
 	public GLCM(double[][] img, int level, int xDis, int yDis, int min, int max, int winSize)
 	{
 		super(img);
+
+		height = img.length;
+		width = img[0].length;
 
 		LOGGER.debug("GLCM: level = {}, distance(x,y) = {},{}", level, xDis, yDis);
 
 		final int[][] scaled = doQuantization(img, level, min, max);
 
 		glcmMap = calculateGLCM(scaled, level, xDis, yDis, winSize);
-		glcmFeatures = new GLCMFeatures(glcmMap);
+		glcmFeatures = new GLCMFeatures(glcmMap, width, height);
 
 	}
 
 	public GLCM(BufferedImage img, int level, int xDis, int yDis, int min, int max, int winSize)
 	{
-		super(img);
-
-		LOGGER.debug("GLCM: level = {}, distance(x,y) = {},{}", level, xDis, yDis);
-
-		final int[][] scaled = doQuantization(convertToDouble(img), level, min, max);
-
-		glcmMap = calculateGLCM(scaled, level, xDis, yDis, winSize);
-		glcmFeatures = new GLCMFeatures(glcmMap);
-
+		this(convertToDouble(img), level, xDis, yDis, min, max, winSize);
 	}
 
 	/**

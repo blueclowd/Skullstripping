@@ -30,4 +30,11 @@ public class DataManagerTest
       e.printStackTrace();
     }
   }
+
+
+  @Test
+  public void testEvaluateResult()
+  {
+    // TODO
+  }
 }
