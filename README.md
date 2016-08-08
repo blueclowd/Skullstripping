@@ -14,12 +14,12 @@ for GUI, BioFormats for medical image I/O and iText 7 for result report.
 ### Installation guide
 * Download and install one of ImageJ distributions such as Fiji (<http://imagej.net/Fiji/Downloads>)
 * Put the following libraries under the directory {Installed folder}/jars/
-** commons-collections.jar
-** itext7-7.0.0
+  * commons-collections.jar
+  * itext7-7.0.0
 * Run the software and install the plugin
-** In the menu bar, click Plugins → Install Plugins....
-** Select LevelSet_CBEL-0.1.0.jar and click open
-**Restart Fiji to complete the installation
+  * In the menu bar, click Plugins → Install Plugins....
+  * Select LevelSet_CBEL-0.1.0.jar and click open
+  * Restart Fiji to complete the installation
 
 ### Software snapshots
 ![Alt text](https://raw.githubusercontent.com/blueclowd/Skullstripping/a0df17e583b8cc1fbb0e18e06450a3c2d0daaadc/LevelSetCBEL.png)
