@@ -7,6 +7,7 @@
 * Libraries
   * Levelset: <http://www.loni.usc.edu/Software/MLS/>
   * Image I/O: BioFormat
+  * GUI: Java Swing
   * Report: iText 7.0.0
   
 ### Introduction
